@@ -19,13 +19,9 @@ DEBUG_LOG="/tmp/speedbuffy.log"
 # Default test servers
 DEFAULT_DOWNLOAD_SERVERS=(
     "https://speed.cloudflare.com/__down?bytes=BYTES"
-    "https://httpbin.org/stream-bytes/BYTES"
-    "http://speedtest.ftp.otenet.gr/files/SIZE_MB.test"
-    "http://speedtest.tele2.net/SIZE_MB.zip"
 )
 
 DEFAULT_UPLOAD_SERVERS=(
-    "https://httpbin.org/post"
     "https://postman-echo.com/post"
 )
 
@@ -619,7 +615,7 @@ select_latency_server() {
     echo "2. Cloudflare DNS (1.1.1.1)"
     echo "3. OpenDNS (208.67.222.222)"
     echo "4. Custom server"
-    echo "5. Return to Main Menu"
+    echo "5. Return to Server Settings"
     echo
     
     read -r -p "Select an option (1-5): " option
@@ -647,7 +643,7 @@ select_latency_server() {
             fi
             ;;
         5)
-            show_menu
+            show_server_settings
             return
             ;;
         *)
@@ -671,7 +667,7 @@ select_download_server() {
     echo "4. Tele2 (http://speedtest.tele2.net/)"
     echo "5. Custom server"
     echo "6. Use all servers (default)"
-    echo "7. Return to Main Menu"
+    echo "7. Return to Server Settings"
     echo
     
     read -r -p "Select an option (1-7): " option
@@ -730,7 +726,7 @@ select_upload_server() {
     echo "2. Postman Echo (https://postman-echo.com/post)"
     echo "3. Custom server"
     echo "4. Use all servers (default)"
-    echo "5. Return to Main Menu"
+    echo "5. Return to Server Settings"
     echo
     
     read -r -p "Select an option (1-5): " option
@@ -771,6 +767,53 @@ select_upload_server() {
     show_menu
 }
 
+# Function to show server settings
+show_server_settings() {
+    display_header
+    
+    echo "${COLOR_CYAN}${COLOR_BOLD}SERVER SETTINGS${COLOR_RESET}"
+    echo
+    echo "1. Latency Server: ${COLOR_BOLD}${LATENCY_TARGET}${COLOR_RESET}"
+    
+    # Display the appropriate download server information
+    if [[ -n "$SELECTED_DOWNLOAD_SERVER" ]]; then
+        echo "2. Download Server: ${COLOR_BOLD}${SELECTED_DOWNLOAD_SERVER}${COLOR_RESET}"
+    else
+        echo "2. Download Server: ${COLOR_BOLD}Cloudflare${COLOR_RESET}"
+    fi
+    
+    # Display the appropriate upload server information
+    if [[ -n "$SELECTED_UPLOAD_SERVER" ]]; then
+        echo "3. Upload Server: ${COLOR_BOLD}${SELECTED_UPLOAD_SERVER}${COLOR_RESET}"
+    else
+        echo "3. Upload Server: ${COLOR_BOLD}Postman Echo${COLOR_RESET}"
+    fi
+    echo "4. Return to Settings"
+    echo
+    
+    read -r -p "Select an option (1-4): " option
+    
+    case $option in
+        1)
+            select_latency_server
+            ;;
+        2)
+            select_download_server
+            ;;
+        3)
+            select_upload_server
+            ;;
+        4)
+            show_settings
+            ;;
+        *)
+            echo "Invalid option. Returning to server settings."
+            sleep 1
+            show_server_settings
+            ;;
+    esac
+}
+
 # Function to show settings
 show_settings() {
     display_header
@@ -781,13 +824,11 @@ show_settings() {
     echo "2. Download Time Cap: ${COLOR_BOLD}${DEFAULT_DL_CAP} seconds${COLOR_RESET}"
     echo "3. Upload Time Cap: ${COLOR_BOLD}${DEFAULT_UL_CAP} seconds${COLOR_RESET}"
     echo "4. IP Version: ${COLOR_BOLD}${DEFAULT_IPV}${COLOR_RESET}"
-    echo "5. Latency Server: ${COLOR_BOLD}${LATENCY_TARGET}${COLOR_RESET}"
-    echo "6. Download Server: ${COLOR_BOLD}${SELECTED_DOWNLOAD_SERVER:-"All Available Servers"}${COLOR_RESET}"
-    echo "7. Upload Server: ${COLOR_BOLD}${SELECTED_UPLOAD_SERVER:-"All Available Servers"}${COLOR_RESET}"
-    echo "8. Return to Main Menu"
+    echo "5. Server Settings"
+    echo "6. Return to Main Menu"
     echo
     
-    read -r -p "Select an option (1-8): " option
+    read -r -p "Select an option (1-6): " option
     
     case $option in
         1)
@@ -842,15 +883,9 @@ show_settings() {
             show_settings
             ;;
         5)
-            select_latency_server
+            show_server_settings
             ;;
         6)
-            select_download_server
-            ;;
-        7)
-            select_upload_server
-            ;;
-        8)
             show_menu
             ;;
         *)
@@ -906,17 +941,35 @@ show_menu() {
     echo "3. Download Test Only"
     echo "4. Upload Test Only"
     echo "5. Settings"
-    echo "6. Select Latency Server"
-    echo "7. Select Download Server"
-    echo "8. Select Upload Server"
-    echo "9. Export JSON"
-    echo "10. Exit"
+    echo "6. Export JSON"
+    echo "7. Exit"
+    echo
+    echo "${COLOR_YELLOW}Current Servers:${COLOR_RESET}"
+    echo "  Latency: ${COLOR_BOLD}${LATENCY_TARGET}${COLOR_RESET}"
+    
+    # Display the appropriate download server information
+    if [[ -n "$SELECTED_DOWNLOAD_SERVER" ]]; then
+        echo "  Download: ${COLOR_BOLD}${SELECTED_DOWNLOAD_SERVER}${COLOR_RESET}"
+    else
+        echo "  Download: ${COLOR_BOLD}Cloudflare${COLOR_RESET}"
+    fi
+    
+    # Display the appropriate upload server information
+    if [[ -n "$SELECTED_UPLOAD_SERVER" ]]; then
+        echo "  Upload: ${COLOR_BOLD}${SELECTED_UPLOAD_SERVER}${COLOR_RESET}"
+    else
+        echo "  Upload: ${COLOR_BOLD}Postman Echo${COLOR_RESET}"
+    fi
     echo
     
-    read -r -p "Select an option (1-10): " option
+    read -r -p "Select an option (1-7): " option
     
     case $option in
         1)
+            display_header
+            # Ask if user wants to select servers
+            ask_server_selection
+            # Clear screen and show header again
             display_header
             run_latency_test
             run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP"
@@ -929,6 +982,37 @@ show_menu() {
             ;;
         2)
             display_header
+            echo "${COLOR_CYAN}${COLOR_BOLD}LATENCY TEST${COLOR_RESET}"
+            echo
+            echo "1. Use default server (${LATENCY_TARGET})"
+            echo "2. Select a different server"
+            echo
+            read -r -p "Select an option (1-2): " server_option
+            
+            if [[ "$server_option" == "2" ]]; then
+                echo
+                echo "Select latency server:"
+                echo "1. Google DNS (8.8.8.8)"
+                echo "2. Cloudflare DNS (1.1.1.1)"
+                echo "3. OpenDNS (208.67.222.222)"
+                echo "4. Custom server"
+                
+                read -r -p "Select an option (1-4): " lat_option
+                
+                case $lat_option in
+                    1) LATENCY_TARGET="8.8.8.8" ;;
+                    2) LATENCY_TARGET="1.1.1.1" ;;
+                    3) LATENCY_TARGET="208.67.222.222" ;;
+                    4)
+                        read -r -p "Enter custom server IP or hostname: " custom_server
+                        if [[ -n "$custom_server" ]]; then
+                            LATENCY_TARGET="$custom_server"
+                        fi
+                        ;;
+                esac
+            fi
+            
+            display_header
             run_latency_test
             display_footer
             echo "Press Enter to return to the main menu..."
@@ -937,6 +1021,41 @@ show_menu() {
             ;;
         3)
             display_header
+            echo "${COLOR_CYAN}${COLOR_BOLD}DOWNLOAD TEST${COLOR_RESET}"
+            echo
+            echo "1. Use default server(s)"
+            echo "2. Select a specific server"
+            echo
+            read -r -p "Select an option (1-2): " server_option
+            
+            if [[ "$server_option" == "2" ]]; then
+                echo
+                echo "Select download server:"
+                echo "1. Cloudflare (https://speed.cloudflare.com/__down)"
+                echo "2. HTTPBin (https://httpbin.org/stream-bytes)"
+                echo "3. OTEnet (http://speedtest.ftp.otenet.gr/files/)"
+                echo "4. Tele2 (http://speedtest.tele2.net/)"
+                echo "5. Custom server"
+                echo "6. Use all servers (default)"
+                
+                read -r -p "Select an option (1-6): " dl_option
+                
+                case $dl_option in
+                    1) SELECTED_DOWNLOAD_SERVER="https://speed.cloudflare.com/__down?bytes=BYTES" ;;
+                    2) SELECTED_DOWNLOAD_SERVER="https://httpbin.org/stream-bytes/BYTES" ;;
+                    3) SELECTED_DOWNLOAD_SERVER="http://speedtest.ftp.otenet.gr/files/SIZE_MB.test" ;;
+                    4) SELECTED_DOWNLOAD_SERVER="http://speedtest.tele2.net/SIZE_MB.zip" ;;
+                    5)
+                        read -r -p "Enter custom server URL (use BYTES or SIZE_MB as placeholders): " custom_server
+                        if [[ -n "$custom_server" ]]; then
+                            SELECTED_DOWNLOAD_SERVER="$custom_server"
+                        fi
+                        ;;
+                    6) SELECTED_DOWNLOAD_SERVER="" ;;
+                esac
+            fi
+            
+            display_header
             run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP"
             display_footer
             echo "Press Enter to return to the main menu..."
@@ -944,6 +1063,37 @@ show_menu() {
             show_menu
             ;;
         4)
+            display_header
+            echo "${COLOR_CYAN}${COLOR_BOLD}UPLOAD TEST${COLOR_RESET}"
+            echo
+            echo "1. Use default server(s)"
+            echo "2. Select a specific server"
+            echo
+            read -r -p "Select an option (1-2): " server_option
+            
+            if [[ "$server_option" == "2" ]]; then
+                echo
+                echo "Select upload server:"
+                echo "1. HTTPBin (https://httpbin.org/post)"
+                echo "2. Postman Echo (https://postman-echo.com/post)"
+                echo "3. Custom server"
+                echo "4. Use all servers (default)"
+                
+                read -r -p "Select an option (1-4): " ul_option
+                
+                case $ul_option in
+                    1) SELECTED_UPLOAD_SERVER="https://httpbin.org/post" ;;
+                    2) SELECTED_UPLOAD_SERVER="https://postman-echo.com/post" ;;
+                    3)
+                        read -r -p "Enter custom server URL: " custom_server
+                        if [[ -n "$custom_server" ]]; then
+                            SELECTED_UPLOAD_SERVER="$custom_server"
+                        fi
+                        ;;
+                    4) SELECTED_UPLOAD_SERVER="" ;;
+                esac
+            fi
+            
             display_header
             run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP"
             display_footer
@@ -955,18 +1105,9 @@ show_menu() {
             show_settings
             ;;
         6)
-            select_latency_server
-            ;;
-        7)
-            select_download_server
-            ;;
-        8)
-            select_upload_server
-            ;;
-        9)
             export_json
             ;;
-        10)
+        7)
             echo "Exiting SpeedBuffy. Goodbye!"
             exit 0
             ;;
@@ -1088,9 +1229,9 @@ if [[ -n "${RUN_MODE:-}" ]]; then
             echo
             
             # Run tests with real-time stats
-        echo "Running latency test to ${LATENCY_TARGET}..."
-        run_latency_test >/dev/null 2>&1
-        echo "Latency: ${COLOR_BOLD}${LATENCY_AVG} ms${COLOR_RESET} (server: ${LATENCY_TARGET}, loss: ${LATENCY_LOSS}%, jitter: ${LATENCY_JITTER} ms)"
+            echo "Running latency test to ${LATENCY_TARGET}..."
+            run_latency_test >/dev/null 2>&1
+            echo "Latency: ${COLOR_BOLD}${LATENCY_AVG} ms${COLOR_RESET} (server: ${LATENCY_TARGET}, loss: ${LATENCY_LOSS}%, jitter: ${LATENCY_JITTER} ms)"
             
             echo "Running download test..."
             run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP" >/dev/null 2>&1
