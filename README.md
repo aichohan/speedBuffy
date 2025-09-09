@@ -1,5 +1,6 @@
-# SpeedBuffy
+# 🚀 SpeedBuffy
 
+```
                          _   ___        __  __       
  ___ _ __   ___  ___  __| | / __\_   _ / _|/ _|_   _ 
 / __| '_ \ / _ \/ _ \/ _` |/__\// | | | |_| |_| | | |
@@ -11,24 +12,25 @@
        /\_/  _/  \_ _/  the Dog
           /  /   / \
           \_/   /_/  
+```
 
-A zero-install ASCII speed test for Linux/Raspberry Pi systems. 
+📊 A zero-install ASCII speed test for Linux/Raspberry Pi systems.
 
-## Why SpeedBuffy?
+## 🤔 Why SpeedBuffy?
 
 You often need a quick, clean speed test without installing packages or heavy binaries. SpeedBuffy is a zero-install script that uses native Linux tools to measure latency, download, and upload speeds, with live ASCII visuals and JSON for CI/automation.
 
 SpeedBuffy relies only on common tools found in most Linux distributions:
-- bash
-- curl
-- ping
-- awk
-- tput
-- coreutils (date, dd, etc.)
+- 🐧 `bash` - For script execution
+- 🌐 `curl` - For download/upload tests
+- 📡 `ping` - For latency tests
+- 🧮 `awk` - For calculations
+- 🎨 `tput` - For terminal formatting
+- 🧰 `coreutils` - For basic operations (date, dd, etc.)
 
-## Usage
+## 📋 Usage
 
-### Quick Examples
+### 🔍 Quick Examples
 
 ```bash
 # Run with interactive menu
@@ -50,7 +52,7 @@ SpeedBuffy relies only on common tools found in most Linux distributions:
 ./speedbuffy.sh --size 50 --quick
 ```
 
-### Command Line Options
+### ⚙️ Command Line Options
 
 ```
 Options:
@@ -68,22 +70,22 @@ Options:
   -h, --help            Show this help message
 ```
 
-### Menu Mode
+### 📱 Menu Mode
 
 When run without arguments, SpeedBuffy presents an interactive menu:
 
-1. **Quick Test** - Runs latency, download, and upload tests in sequence
-2. **Latency Test Only** - Measures packet loss, average latency, and jitter
-3. **Download Test Only** - Measures download speed
-4. **Upload Test Only** - Measures upload speed
-5. **Settings** - Configure test parameters (download size, time caps, IP version, servers)
-6. **Select Latency Server** - Choose from predefined servers or enter a custom one
-7. **Select Download Server** - Choose from predefined servers or enter a custom one
-8. **Select Upload Server** - Choose from predefined servers or enter a custom one
-9. **Export JSON** - Run tests and save results to a timestamped JSON file
-10. **Exit** - Quit SpeedBuffy
+1. **🔄 Quick Test** - Runs latency, download, and upload tests in sequence
+2. **📶 Latency Test Only** - Measures packet loss, average latency, and jitter
+3. **⬇️ Download Test Only** - Measures download speed
+4. **⬆️ Upload Test Only** - Measures upload speed
+5. **⚙️ Settings** - Configure test parameters (download size, time caps, IP version, servers)
+6. **🌐 Select Latency Server** - Choose from predefined servers or enter a custom one
+7. **🌍 Select Download Server** - Choose from predefined servers or enter a custom one
+8. **🌎 Select Upload Server** - Choose from predefined servers or enter a custom one
+9. **💾 Export JSON** - Run tests and save results to a timestamped JSON file
+10. **🚪 Exit** - Quit SpeedBuffy
 
-### Sample Visual Output
+### 📺 Sample Visual Output
 
 ```
 SERVER SELECTION
@@ -135,7 +137,7 @@ Speed: 12.45 MB/s (99.60 Mb/s)
 Time: 8.03 seconds
 ```
 
-### Test Results Display
+### 📊 Test Results Display
 
 ```
 TEST RESULTS
@@ -157,26 +159,26 @@ Upload:
   Time: 1.88 seconds
 ```
 
-### Sample JSON Output
+### 📄 Sample JSON Output
 
 ```json
 {"latency":{"server":"8.8.8.8","loss_pct":0,"avg_ms":24.35,"jitter_ms":3.21},"download":{"server":"https://speed.cloudflare.com/__down?bytes=100000000","MBps":12.45,"Mbps":99.60,"seconds":8.03},"upload":{"server":"https://httpbin.org/post","MBps":5.32,"Mbps":42.56,"seconds":1.88}}
 ```
 
-## Robustness Features
+## 🛡️ Robustness Features
 
-- **Multiple Fallbacks**: If a test server fails, SpeedBuffy automatically tries alternative servers
-- **Comprehensive Server Selection**: Choose from predefined servers or specify custom ones for latency, download, and upload tests
-- **Server Selection in Quick Tests**: Option to select specific servers when running quick tests
-- **Server Reporting**: All outputs (visual, JSON, file) include the servers used for each test
-- **Error Handling**: Gracefully handles network issues and timeouts
-- **ASCII-only UI**: Works in any terminal without Unicode support
-- **Color Auto-detection**: Automatically disables color when stdout isn't a TTY
-- **Numeric Sanitization**: All values are sanitized to avoid blank/null values
-- **Debug Logging**: Use `--debug` to write detailed logs to `/tmp/speedbuffy.log`
-- **Zero Dependencies**: Uses only tools commonly available on Linux systems
+- **🔄 Multiple Fallbacks**: If a test server fails, SpeedBuffy automatically tries alternative servers
+- **🌐 Comprehensive Server Selection**: Choose from predefined servers or specify custom ones for latency, download, and upload tests
+- **🔍 Server Selection in Quick Tests**: Option to select specific servers when running quick tests
+- **📝 Server Reporting**: All outputs (visual, JSON, file) include the servers used for each test
+- **🛑 Error Handling**: Gracefully handles network issues and timeouts
+- **💻 ASCII-only UI**: Works in any terminal without Unicode support
+- **🎨 Color Auto-detection**: Automatically disables color when stdout isn't a TTY
+- **🧹 Numeric Sanitization**: All values are sanitized to avoid blank/null values
+- **📋 Debug Logging**: Use `--debug` to write detailed logs to `/tmp/speedbuffy.log`
+- **🚫 Zero Dependencies**: Uses only tools commonly available on Linux systems
 
-## License
+## 📜 License
 
 MIT License
 
@@ -200,4 +202,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Designed by @ai_chohan
+---
+
+✨ Designed by [@ai_chohan](https://github.com/ai_chohan)
