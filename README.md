@@ -1,4 +1,4 @@
-# 🚀 SpeedBuffy
+# 🚀 speedBuffy
 
 ```
                          _   ___        __  __       
@@ -16,11 +16,11 @@
 
 A zero-install ASCII speed test for Linux/Raspberry Pi systems.
 
-## 🤔 Why SpeedBuffy?
+## 🤔 Why speedBuffy?
 
 You often need a quick, clean speed test without installing packages or heavy binaries. SpeedBuffy is a zero-install script that uses native Linux tools to measure latency, download, and upload speeds, with live ASCII visuals and JSON for CI/automation.
 
-SpeedBuffy relies only on common tools found in most Linux distributions:
+speedBuffy relies only on common tools found in most Linux distributions:
 - `bash` - For script execution
 - `curl` - For download/upload tests
 - `ping` - For latency tests
@@ -34,22 +34,22 @@ SpeedBuffy relies only on common tools found in most Linux distributions:
 
 ```bash
 # Run with interactive menu
-./speedbuffy.sh
+./speedBuffy.sh
 
 # Run quick test with visuals and exit
-./speedbuffy.sh --quick
+./speedBuffy.sh --quick
 
 # Output JSON to stdout
-./speedbuffy.sh --json
+./speedBuffy.sh --json
 
 # Save JSON to timestamped file
-./speedbuffy.sh --save-json
+./speedBuffy.sh --save-json
 
 # Save JSON to specific file
-./speedbuffy.sh --out-json results.json
+./speedBuffy.sh --out-json results.json
 
 # Run quick test with custom download size
-./speedbuffy.sh --size 50 --quick
+./speedBuffy.sh --size 50 --quick
 ```
 
 ### ⚙️ Command Line Options
