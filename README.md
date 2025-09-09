@@ -12,7 +12,7 @@
           /  /   / \
           \_/   /_/  
 
-A zero-install ASCII speed test for Linux/Raspberry Pi systems.
+A zero-install ASCII speed test for Linux/Raspberry Pi systems. 
 
 ## Why SpeedBuffy?
 
