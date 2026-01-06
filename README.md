@@ -28,6 +28,53 @@ speedBuffy relies only on common tools found in most Linux distributions:
 - `tput` - For terminal formatting
 - `coreutils` - For basic operations (date, dd, etc.)
 
+## 🚀 Quick Start
+
+### Get SpeedBuffy
+
+#### Option 1: Clone Repository (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/aichohan/speedBuffy.git
+
+# Navigate to the directory
+cd speedBuffy
+
+# Make the script executable
+chmod +x speedbuffy.sh
+```
+
+#### Option 2: Direct Download (Quick Try)
+```bash
+# Download just the script file
+curl -O https://raw.githubusercontent.com/aichohan/speedBuffy/main/speedbuffy.sh
+
+# Make executable and run
+chmod +x speedbuffy.sh
+./speedbuffy.sh --help
+```
+
+### Run Your First Test
+```bash
+# Quick speed test (recommended for first run)
+./speedbuffy.sh --quick
+
+# Or start with interactive menu
+./speedbuffy.sh
+
+# Or get JSON results
+./speedbuffy.sh --json --size 10
+```
+
+### Verify Everything Works
+```bash
+# Test all functionality with a small file
+./speedbuffy.sh --debug --json --size 5
+
+# Check debug log if needed
+cat /tmp/speedbuffy.log
+```
+
 ## 📋 Usage
 
 ### Quick Examples
@@ -223,7 +270,89 @@ Upload:
 
 By default, SpeedBuffy uses:
 - Cloudflare for download tests
-- Postman Echo for upload tests
+- Postman Echo (primary) and HTTPBin (fallback) for upload tests
+
+## System Requirements
+
+### Supported Platforms
+- ✅ Linux (all distributions)
+- ✅ Raspberry Pi OS
+- ✅ macOS (with bash installed)
+- ✅ Windows WSL/WSL2
+
+### Required Tools
+All commands must be available in PATH:
+```bash
+# Check if you have required tools
+which bash curl ping awk tput date dd
+
+# Most systems have these by default, if not:
+# Ubuntu/Debian: apt install curl iputils-ping gawk ncurses-bin coreutils
+# RHEL/CentOS: yum install curl iputils gawk ncurses coreutils
+# macOS: brew install curl gawk ncurses coreutils
+```
+
+## Troubleshooting
+
+### Upload Tests Show 0.00 MB/s
+This was a known issue that has been **fixed** as of January 2026. If you still see this:
+```bash
+# Update to latest version
+git pull origin main
+
+# Test with debug logging
+./speedbuffy.sh --debug --json --size 5
+cat /tmp/speedbuffy.log
+```
+
+### Network/Connectivity Issues
+```bash
+# Test server connectivity manually
+curl -I https://postman-echo.com/post
+curl -I https://httpbin.org/post
+curl -I https://speed.cloudflare.com/__down
+
+# Test with different file sizes
+./speedbuffy.sh --json --size 1   # Small test
+./speedbuffy.sh --json --size 50  # Medium test
+```
+
+### Permission Denied Errors
+```bash
+# Make sure script is executable
+chmod +x speedbuffy.sh
+
+# Check file permissions
+ls -la speedbuffy.sh
+
+# Should show: -rwxr-xr-x (executable for owner)
+```
+
+### Script Won't Run
+```bash
+# Check bash syntax
+bash -n speedbuffy.sh
+
+# Run with explicit bash
+bash ./speedbuffy.sh --help
+
+# Check bash version (requires bash 4.0+)
+bash --version
+```
+
+## Recent Updates
+
+### January 2026 - Critical Fixes ✅
+- **Fixed upload test failures** for file sizes 1-9 MB (integer division bug)
+- **Added HTTPBin fallback server** for improved reliability
+- **Enhanced error handling** with minimum file size constraints
+- **All file sizes now work correctly** - no more 0.00 MB/s upload speeds
+
+### Features
+- Zero-install design with ASCII progress bars
+- Multiple output formats (visual, JSON, timestamped files)
+- Configurable server selection and test parameters
+- Comprehensive debug logging for troubleshooting
 
 ## License
 

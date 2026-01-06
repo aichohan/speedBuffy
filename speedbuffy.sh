@@ -23,6 +23,7 @@ DEFAULT_DOWNLOAD_SERVERS=(
 
 DEFAULT_UPLOAD_SERVERS=(
     "https://postman-echo.com/post"
+    "https://httpbin.org/post"
 )
 
 # Active test servers - will be populated based on selection
@@ -84,6 +85,17 @@ log_debug() {
     if [[ "$DEBUG" == true ]]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$DEBUG_LOG"
     fi
+}
+
+# Function to calculate upload size with minimum constraint
+calculate_upload_size() {
+    local download_size=${1:-$DEFAULT_DL_SIZE}
+    local upload_size=$((download_size / 10))
+    # Ensure minimum 1MB upload size to avoid empty files
+    if [[ $upload_size -lt 1 ]]; then
+        upload_size=1
+    fi
+    echo "$upload_size"
 }
 
 # Function to display the header with ASCII banner
@@ -318,7 +330,7 @@ run_download_test() {
 
 # Function to run upload test
 run_upload_test() {
-    local size=${1:-$((DEFAULT_DL_SIZE / 10))} # Default to 1/10th of download size
+    local size=${1:-$(calculate_upload_size)} # Default to 1/10th of download size with minimum 1MB
     local cap=${2:-$DEFAULT_UL_CAP}
     local start_time
     local end_time
@@ -574,7 +586,7 @@ run_quick_test() {
     # Run tests
     run_latency_test
     run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP"
-    run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP"
+    run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP"
     display_results
     display_footer
 }
@@ -592,13 +604,13 @@ run_json_test() {
         echo "Download: ${COLOR_BOLD}${DOWNLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${DOWNLOAD_MBPS_BITS} Mb/s)"
         
         echo "Running upload test..."
-        run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP" >/dev/null 2>&1
+        run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP" >/dev/null 2>&1
         echo "Upload: ${COLOR_BOLD}${UPLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${UPLOAD_MBPS_BITS} Mb/s)"
     else
         # Run tests without visual output for pure JSON mode
         run_latency_test >/dev/null 2>&1
         run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP" >/dev/null 2>&1
-        run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP" >/dev/null 2>&1
+        run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP" >/dev/null 2>&1
     fi
     
     # Generate JSON
@@ -912,7 +924,7 @@ export_json() {
     echo "Download: ${COLOR_BOLD}${DOWNLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${DOWNLOAD_MBPS_BITS} Mb/s)"
     
     echo "Running upload test..."
-    run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP" >/dev/null 2>&1
+    run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP" >/dev/null 2>&1
     echo "Upload: ${COLOR_BOLD}${UPLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${UPLOAD_MBPS_BITS} Mb/s)"
     
     # Generate and save JSON
@@ -973,7 +985,7 @@ show_menu() {
             display_header
             run_latency_test
             run_download_test "$DEFAULT_DL_SIZE" "$DEFAULT_DL_CAP"
-            run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP"
+            run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP"
             display_results
             display_footer
             echo "Press Enter to return to the main menu..."
@@ -1095,7 +1107,7 @@ show_menu() {
             fi
             
             display_header
-            run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP"
+            run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP"
             display_footer
             echo "Press Enter to return to the main menu..."
             read -r
@@ -1238,7 +1250,7 @@ if [[ -n "${RUN_MODE:-}" ]]; then
             echo "Download: ${COLOR_BOLD}${DOWNLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (server: ${DOWNLOAD_SERVER}, ${DOWNLOAD_MBPS_BITS} Mb/s)"
             
             echo "Running upload test..."
-            run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP" >/dev/null 2>&1
+            run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP" >/dev/null 2>&1
             echo "Upload: ${COLOR_BOLD}${UPLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (server: ${UPLOAD_SERVER}, ${UPLOAD_MBPS_BITS} Mb/s)"
             
             # Generate and save JSON
@@ -1263,7 +1275,7 @@ if [[ -n "${RUN_MODE:-}" ]]; then
             echo "Download: ${COLOR_BOLD}${DOWNLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${DOWNLOAD_MBPS_BITS} Mb/s)"
             
             echo "Running upload test..."
-            run_upload_test "$((DEFAULT_DL_SIZE / 10))" "$DEFAULT_UL_CAP" >/dev/null 2>&1
+            run_upload_test "$(calculate_upload_size)" "$DEFAULT_UL_CAP" >/dev/null 2>&1
             echo "Upload: ${COLOR_BOLD}${UPLOAD_MBPS_PRETTY} MB/s${COLOR_RESET} (${UPLOAD_MBPS_BITS} Mb/s)"
             
             # Generate and save JSON

@@ -1,0 +1,32 @@
+# Development and testing documentation
+SPEEDBUFFY_TEST_REPORT.md
+FIX_SUMMARY.md
+README_UPDATE_SUMMARY.md
+CLAUDE.md
+
+# Debug logs
+/tmp/speedbuffy.log
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/tmp.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+test-results/
+*-test-*.json
+speedbuffy-*.json
+
+# Plans directory (if exists)
+.claude/
